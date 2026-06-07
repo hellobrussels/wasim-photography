@@ -67,3 +67,69 @@ CREATE POLICY "Allow authenticated delete media" ON storage.objects
     bucket_id = 'media'
     AND auth.role() = 'authenticated'
   );
+
+-- Create services table
+CREATE TABLE services (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  title TEXT NOT NULL,
+  description TEXT,
+  price TEXT NOT NULL,
+  icon TEXT NOT NULL,
+  features TEXT[] NOT NULL DEFAULT '{}',
+  is_popular BOOLEAN DEFAULT false,
+  position INT DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create index on position for proper ordering
+CREATE INDEX idx_services_position ON services(position);
+
+-- Enable RLS on services table
+ALTER TABLE services ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Allow public read access
+CREATE POLICY "Allow public read" ON services
+  FOR SELECT
+  USING (true);
+
+-- Policy: Allow authenticated users to insert/update/delete
+CREATE POLICY "Allow authenticated insert" ON services
+  FOR INSERT
+  WITH CHECK (auth.role() = 'authenticated');
+
+CREATE POLICY "Allow authenticated update" ON services
+  FOR UPDATE
+  USING (auth.role() = 'authenticated')
+  WITH CHECK (auth.role() = 'authenticated');
+
+CREATE POLICY "Allow authenticated delete" ON services
+  FOR DELETE
+  USING (auth.role() = 'authenticated');
+
+-- Insert default services
+INSERT INTO services (title, price, icon, features, is_popular, position) VALUES
+(
+  'Photographie',
+  'À partir de 300€',
+  'camera',
+  ARRAY['Shooting Studio/Extérieur', 'Retouche HD', 'Galerie Privée', '15 Photos Numériques'],
+  false,
+  1
+),
+(
+  'Vidéo',
+  'À partir de 600€',
+  'video',
+  ARRAY['Tournage 4K', 'Montage Dynamique', 'Colorimétrie', 'Sound Design'],
+  true,
+  2
+),
+(
+  'Scénario',
+  'Sur Devis',
+  'penTool',
+  ARRAY['Script Doctoring', 'Écriture Complète', 'Structure Dramatique', 'Dialogues'],
+  false,
+  3
+);
