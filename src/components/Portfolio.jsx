@@ -7,7 +7,6 @@ const categories = [
     { id: 'all', label: 'Tout' },
     { id: 'photo', label: 'Photographie' },
     { id: 'video', label: 'Vidéo' },
-    { id: 'script', label: 'Scénario' },
 ];
 
 const defaultItems = [

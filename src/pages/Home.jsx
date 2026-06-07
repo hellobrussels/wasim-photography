@@ -1,12 +1,14 @@
 import React from 'react';
 import Hero from '../components/Hero';
+import QuickIntro from '../components/QuickIntro';
 
 const Home = () => {
     return (
         <>
             <Hero />
+            <QuickIntro />
             <div className="container section-padding">
-                {/* About Preview or other sections will go here */}
+                {/* Other sections will go here */}
             </div>
         </>
     );

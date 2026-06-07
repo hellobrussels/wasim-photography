@@ -1,24 +1,7 @@
 ﻿import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { supabase } from '../lib/supabase';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3001';
 const MediaContext = createContext(null);
-
-async function apiRequest(path, options = {}) {
-  const response = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include',
-    ...options,
-  });
-
-  const payload = await response.json();
-  if (!response.ok) {
-    throw new Error(payload.error || payload.message || 'Erreur API');
-  }
-
-  return payload;
-}
 
 export function MediaProvider({ children }) {
   const [mediaItems, setMediaItems] = useState([]);
@@ -27,10 +10,19 @@ export function MediaProvider({ children }) {
   const fetchMedia = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await apiRequest('/api/media');
-      setMediaItems(data || []);
-    } catch (error) {
-      console.error('Erreur lors du chargement des médias:', error);
+      const { data, error } = await supabase
+        .from('media')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Supabase error loading media:', error);
+        setMediaItems([]);
+      } else {
+        setMediaItems(data || []);
+      }
+    } catch (err) {
+      console.error('Erreur lors du chargement des médias:', err);
       setMediaItems([]);
     }
     setLoading(false);
@@ -40,44 +32,42 @@ export function MediaProvider({ children }) {
     fetchMedia();
   }, [fetchMedia]);
 
+  // Note: keep existing upload/CRUD helpers using API if present in project.
   const addMedia = async (mediaData) => {
-    const data = await apiRequest('/api/media', {
-      method: 'POST',
-      body: JSON.stringify(mediaData),
-    });
+    const { data, error } = await supabase.from('media').insert([mediaData]);
+    if (error) throw error;
     await fetchMedia();
     return data;
   };
 
   const updateMedia = async (id, updates) => {
-    const data = await apiRequest(`/api/media/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(updates),
-    });
+    const { data, error } = await supabase.from('media').update(updates).eq('id', id);
+    if (error) throw error;
     await fetchMedia();
     return data;
   };
 
   const deleteMedia = async (id) => {
-    await apiRequest(`/api/media/${id}`, { method: 'DELETE' });
+    const { error } = await supabase.from('media').delete().eq('id', id);
+    if (error) throw error;
     await fetchMedia();
   };
 
   const uploadFile = async (file) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const response = await fetch(`${API_BASE}/api/media/upload`, {
-      method: 'POST',
-      body: formData,
-    });
-
-    const payload = await response.json();
-    if (!response.ok) {
-      throw new Error(payload.error || 'Erreur d\u2019upload');
+    // If you use Supabase storage, upload here. Fallback: return null.
+    try {
+      const fileName = `${Date.now()}_${file.name}`;
+      const { data, error } = await supabase.storage.from('media').upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
+      if (error) throw error;
+      const publicUrl = supabase.storage.from('media').getPublicUrl(data.path).publicURL;
+      return publicUrl;
+    } catch (err) {
+      console.error('Erreur upload fichier:', err);
+      throw err;
     }
-
-    return payload.publicUrl;
   };
 
   const getMediaBySection = useCallback(
