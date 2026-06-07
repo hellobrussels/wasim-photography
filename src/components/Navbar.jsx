@@ -35,7 +35,7 @@ const Navbar = () => {
       <div className="container navbar-content">
         <Link to="/" className="logo">
           <Camera className="logo-icon" size={24} color="var(--color-accent)" />
-          <span>LUMIÈRE<span style={{ color: 'var(--color-accent)' }}>.</span></span>
+          <span>Wasîm Photo & Video<span style={{ color: 'var(--color-accent)' }}>.</span></span>
         </Link>
 
         {/* Desktop Menu */}

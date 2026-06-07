@@ -20,7 +20,7 @@ const AdminLayout = () => {
       <aside className="admin-sidebar">
         <div className="admin-brand">
           <Camera size={24} color="var(--color-accent)" />
-          <span>LUMIÈRE Admin</span>
+          <span>Wasîm Photo & Video Admin</span>
         </div>
         <nav className="admin-nav">
           <Link 

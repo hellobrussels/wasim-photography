@@ -6,7 +6,7 @@ const Footer = () => {
         <footer className="footer">
             <div className="container footer-content">
                 <div className="footer-brand">
-                    <h3>LUMIÈRE<span style={{ color: 'var(--color-accent)' }}>.</span></h3>
+                    <h3>Wasîm Photo & Video<span style={{ color: 'var(--color-accent)' }}>.</span></h3>
                     <p>Capturing moments, crafting stories.</p>
                 </div>
 
@@ -18,7 +18,7 @@ const Footer = () => {
                 </div>
 
                 <div className="footer-copyright">
-                    <p>&copy; {new Date().getFullYear()} Lumière Studio. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} Wasîm Photo & Video. All rights reserved.</p>
                 </div>
             </div>
 
