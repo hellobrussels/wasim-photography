@@ -17,7 +17,7 @@ const Hero = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                 >
-                    <h2 className="hero-subtitle">Photographe &bull; Cameraman &bull; Scénariste</h2>
+                    <h2 className="hero-subtitle">Photographe &bull; Cameraman</h2>
                 </motion.div>
 
                 <motion.h1
