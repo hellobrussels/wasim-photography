@@ -122,7 +122,6 @@ const MediaForm = ({ editingMedia, onClose }) => {
               <select name="category" value={formData.category} onChange={handleChange}>
                 <option value="photo">Photographie</option>
                 <option value="video">Vidéo</option>
-                <option value="script">Scénario</option>
               </select>
             </div>
             

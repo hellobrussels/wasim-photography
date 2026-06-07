@@ -25,13 +25,7 @@ const defaultItems = [
         image: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=1600',
         desc: 'Court-métrage dramatique primé.'
     },
-    {
-        id: 3,
-        title: 'Échos du Passé',
-        category: 'script',
-        image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=1600',
-        desc: 'Scénario de long-métrage (Thriller).'
-    },
+    
 ];
 
 const Portfolio = () => {
