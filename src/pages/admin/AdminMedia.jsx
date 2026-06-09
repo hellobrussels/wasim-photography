@@ -1,7 +1,7 @@
 ﻿import React, { useState } from 'react';
 import { Plus, Filter } from 'lucide-react';
 import { useMedia } from '../../context/MediaContext';
-import MediaForm from '../../components/admin/MediaForm';
+import MediaUploadModal from '../../components/admin/MediaUploadModal';
 import MediaCard from '../../components/admin/MediaCard';
 
 const AdminMedia = () => {
@@ -68,9 +68,9 @@ const AdminMedia = () => {
       </div>
 
       {showForm && (
-        <MediaForm 
-          editingMedia={editingMedia} 
-          onClose={closeForm} 
+        <MediaUploadModal
+          editingMedia={editingMedia}
+          onClose={closeForm}
         />
       )}
 

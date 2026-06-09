@@ -5,6 +5,7 @@ const MediaContext = createContext(null);
 
 export function MediaProvider({ children }) {
   const [mediaItems, setMediaItems] = useState([]);
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchMedia = useCallback(async () => {
@@ -28,8 +29,28 @@ export function MediaProvider({ children }) {
     setLoading(false);
   }, []);
 
+  const fetchPosts = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Supabase error loading posts:', error);
+        setPosts([]);
+      } else {
+        setPosts(data || []);
+      }
+    } catch (err) {
+      console.error('Erreur lors du chargement des posts:', err);
+      setPosts([]);
+    }
+  }, []);
+
   useEffect(() => {
     fetchMedia();
+    fetchPosts();
   }, [fetchMedia]);
 
   // Note: keep existing upload/CRUD helpers using API if present in project.
@@ -38,6 +59,31 @@ export function MediaProvider({ children }) {
     if (error) throw error;
     await fetchMedia();
     return data;
+  };
+
+  const getMediaByPost = useCallback(
+    (postId) => mediaItems.filter((item) => item.post_id === postId),
+    [mediaItems]
+  );
+
+  const addPost = async (postData) => {
+    const { data, error } = await supabase.from('posts').insert([postData]).select();
+    if (error) throw error;
+    await fetchPosts();
+    return data;
+  };
+
+  const updatePost = async (id, updates) => {
+    const { data, error } = await supabase.from('posts').update(updates).eq('id', id);
+    if (error) throw error;
+    await fetchPosts();
+    return data;
+  };
+
+  const deletePost = async (id) => {
+    const { error } = await supabase.from('posts').delete().eq('id', id);
+    if (error) throw error;
+    await fetchPosts();
   };
 
   const updateMedia = async (id, updates) => {
@@ -83,12 +129,18 @@ export function MediaProvider({ children }) {
   const value = {
     mediaItems,
     loading,
+    posts,
+    fetchMedia,
     addMedia,
     updateMedia,
     deleteMedia,
     uploadFile,
+    addPost,
+    updatePost,
+    deletePost,
     getMediaBySection,
     getMediaByCategory,
+    getMediaByPost,
   };
 
   return (

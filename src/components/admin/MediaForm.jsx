@@ -1,9 +1,10 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { X, Upload, Link as LinkIcon, Eye } from 'lucide-react';
+import { Upload, Link as LinkIcon, Eye } from 'lucide-react';
 import { useMedia } from '../../context/MediaContext';
+import ModalWrapper from '../../components/ModalWrapper';
 
 const MediaForm = ({ editingMedia, onClose }) => {
-  const { addMedia, updateMedia, uploadFile } = useMedia();
+  const { addMedia, updateMedia, uploadFile, posts } = useMedia();
   
   const [formData, setFormData] = useState({
     title: '',
@@ -11,7 +12,8 @@ const MediaForm = ({ editingMedia, onClose }) => {
     url: '',
     type: 'photo',
     category: 'photo',
-    section: 'portfolio'
+    section: 'portfolio',
+    post_id: ''
   });
   
   const [file, setFile] = useState(null);
@@ -26,7 +28,8 @@ const MediaForm = ({ editingMedia, onClose }) => {
         url: editingMedia.url || '',
         type: editingMedia.type || 'photo',
         category: editingMedia.category || 'photo',
-        section: editingMedia.section || 'portfolio'
+        section: editingMedia.section || 'portfolio',
+        post_id: editingMedia.post_id || ''
       });
     }
   }, [editingMedia]);
@@ -78,15 +81,11 @@ const MediaForm = ({ editingMedia, onClose }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <button className="close-btn" onClick={onClose}><X size={24} /></button>
-        
-        <h2>{editingMedia ? 'Modifier le Média' : 'Ajouter un Média'}</h2>
-        
-        {error && <div className="error-msg">{error}</div>}
-        
-        <form onSubmit={handleSubmit} className="media-form">
+    <ModalWrapper title={editingMedia ? 'Modifier le Média' : 'Ajouter un Média'} onClose={onClose} size="md">
+
+      {error && <div className="error-msg">{error}</div>}
+
+      <form onSubmit={handleSubmit} className="media-form">
           <div className="form-group">
             <label>Titre</label>
             <input 
@@ -122,6 +121,18 @@ const MediaForm = ({ editingMedia, onClose }) => {
               <select name="category" value={formData.category} onChange={handleChange}>
                 <option value="photo">Photographie</option>
                 <option value="video">Vidéo</option>
+                <option value="cinema">Cinéma</option>
+                <option value="reportage-documentaire">Reportage / Documentaire</option>
+              </select>
+            </div>
+            
+            <div className="form-group">
+              <label>Associer à un Post (optionnel)</label>
+              <select name="post_id" value={formData.post_id} onChange={handleChange}>
+                <option value="">Aucun</option>
+                {posts && posts.map(p => (
+                  <option key={p.id} value={p.id}>{p.title}</option>
+                ))}
               </select>
             </div>
             
@@ -187,204 +198,30 @@ const MediaForm = ({ editingMedia, onClose }) => {
             </button>
           </div>
         </form>
-      </div>
 
       <style>{`
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: rgba(0,0,0,0.8);
-          backdrop-filter: blur(5px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
-        }
-
-        .modal-content {
-          background: var(--color-bg-light);
-          padding: 2rem;
-          border-radius: 8px;
-          border: 1px solid rgba(255,255,255,0.1);
-          width: 100%;
-          max-width: 600px;
-          max-height: 90vh;
-          overflow-y: auto;
-          position: relative;
-        }
-
-        .close-btn {
-          position: absolute;
-          top: 1rem;
-          right: 1rem;
-          background: transparent;
-          color: var(--color-text-muted);
-          transition: color 0.3s ease;
-        }
-
-        .close-btn:hover {
-          color: var(--color-accent);
-        }
-
-        .modal-content h2 {
-          font-family: var(--font-heading);
-          color: var(--color-accent);
-          margin-bottom: 1.5rem;
-        }
-
-        .error-msg {
-          background: rgba(255,0,0,0.1);
-          color: #ff4d4d;
-          padding: 1rem;
-          border-radius: 4px;
-          margin-bottom: 1rem;
-        }
-
-        .media-form {
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-        }
-
-        .form-row {
-          display: flex;
-          gap: 1rem;
-        }
-
-        .form-row .form-group {
-          flex: 1;
-        }
-
-        .form-group label {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          font-size: 0.9rem;
-          color: var(--color-text-muted);
-          margin-bottom: 0.5rem;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="url"],
-        .form-group textarea,
-        .form-group select {
-          width: 100%;
-          padding: 0.75rem;
-          background: rgba(0,0,0,0.5);
-          border: 1px solid rgba(255,255,255,0.1);
-          border-radius: 4px;
-          color: var(--color-text);
-          font-family: var(--font-main);
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-          outline: none;
-          border-color: var(--color-accent);
-        }
-
-        .media-input-group {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-          background: rgba(0,0,0,0.3);
-          padding: 1rem;
-          border-radius: 4px;
-          border: 1px dashed rgba(255,255,255,0.1);
-        }
-
-        .input-with-icon {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          background: rgba(0,0,0,0.5);
-          border: 1px solid rgba(255,255,255,0.1);
-          border-radius: 4px;
-          padding: 0 0.75rem;
-        }
-
-        .input-with-icon input {
-          border: none !important;
-          background: transparent !important;
-          padding-left: 0 !important;
-        }
-
-        .file-upload {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-        }
-
-        .file-upload input[type="file"] {
-          display: none;
-        }
-
-        .file-upload label {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          cursor: pointer;
-          margin: 0;
-        }
-
-        .btn-outline-dark {
-          padding: 0.5rem 1rem;
-          border: 1px solid rgba(255,255,255,0.2);
-          border-radius: 4px;
-          background: transparent;
-          color: var(--color-text);
-          transition: all 0.3s ease;
-        }
-
-        .btn-outline-dark:hover {
-          border-color: var(--color-accent);
-          color: var(--color-accent);
-        }
-
-        .file-name {
-          font-size: 0.8rem;
-          color: var(--color-accent);
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          max-width: 200px;
-        }
-
-        .preview-container {
-          background: rgba(0,0,0,0.3);
-          padding: 1rem;
-          border-radius: 4px;
-        }
-
-        .preview-img-wrapper {
-          width: 100%;
-          height: 200px;
-          border-radius: 4px;
-          overflow: hidden;
-          background: #000;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .preview-img-wrapper img {
-          max-width: 100%;
-          max-height: 100%;
-          object-fit: contain;
-        }
-
-        .form-actions {
-          display: flex;
-          justify-content: flex-end;
-          gap: 1rem;
-          margin-top: 1rem;
-        }
+        .media-form {display:flex;flex-direction:column;gap:1.5rem}
+        .form-row{display:flex;gap:1rem}
+        .form-row .form-group{flex:1}
+        .form-group label{display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;color:var(--color-text-muted);margin-bottom:0.5rem}
+        .form-group input[type="text"],.form-group input[type="url"],.form-group textarea,.form-group select{width:100%;padding:0.75rem;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--color-text);font-family:var(--font-main)}
+        .form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--color-accent)}
+        .media-input-group{display:flex;flex-direction:column;gap:1rem;background:rgba(0,0,0,0.3);padding:1rem;border-radius:4px;border:1px dashed rgba(255,255,255,0.1)}
+        .input-with-icon{display:flex;align-items:center;gap:0.5rem;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:0 0.75rem}
+        .input-with-icon input{border:none!important;background:transparent!important;padding-left:0!important}
+        .file-upload{display:flex;align-items:center;gap:1rem}
+        .file-upload input[type="file"]{display:none}
+        .file-upload label{display:flex;align-items:center;gap:0.5rem;cursor:pointer;margin:0}
+        .btn-outline-dark{padding:0.5rem 1rem;border:1px solid rgba(255,255,255,0.2);border-radius:4px;background:transparent;color:var(--color-text);transition:all 0.3s ease}
+        .btn-outline-dark:hover{border-color:var(--color-accent);color:var(--color-accent)}
+        .file-name{font-size:0.8rem;color:var(--color-accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+        .preview-container{background:rgba(0,0,0,0.3);padding:1rem;border-radius:4px}
+        .preview-img-wrapper{width:100%;height:200px;border-radius:4px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+        .preview-img-wrapper img{max-width:100%;max-height:100%;object-fit:contain}
+        .form-actions{display:flex;justify-content:flex-end;gap:1rem;margin-top:1rem}
+        .error-msg{background:rgba(255,0,0,0.1);color:#ff4d4d;padding:1rem;border-radius:4px;margin-bottom:1rem}
       `}</style>
-    </div>
+    </ModalWrapper>
   );
 };
 

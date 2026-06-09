@@ -14,6 +14,7 @@ import AdminLayout from './components/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminMedia from './pages/admin/AdminMedia';
+import AdminPosts from './pages/admin/AdminPosts';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="media" element={<AdminMedia />} />
+              <Route path="posts" element={<AdminPosts />} />
             </Route>
           </Routes>
         </Router>

@@ -1,12 +1,15 @@
 ﻿import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Image, Film, FileText, ExternalLink } from 'lucide-react';
+import { Image, Film, FileText } from 'lucide-react';
+import PostModal from './PostModal';
 import { useMedia } from '../context/MediaContext';
 
 const categories = [
     { id: 'all', label: 'Tout' },
     { id: 'photo', label: 'Photographie' },
-    { id: 'video', label: 'Vidéo' },
+  { id: 'video', label: 'Vidéo' },
+  { id: 'cinema', label: 'Cinéma' },
+  { id: 'reportage-documentaire', label: 'Reportage / Documentaire' },
 ];
 
 const defaultItems = [
@@ -29,7 +32,10 @@ const defaultItems = [
 
 const Portfolio = () => {
     const [filter, setFilter] = useState('all');
-    const { getMediaBySection } = useMedia();
+    const { getMediaBySection, posts, getMediaByPost } = useMedia();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalPost, setModalPost] = useState(null);
+  const [modalMedia, setModalMedia] = useState([]);
     
     let portfolioItems = getMediaBySection('portfolio');
     
@@ -62,43 +68,61 @@ const Portfolio = () => {
 
                 <motion.div layout className="portfolio-grid">
                     <AnimatePresence>
-                        {filteredItems.map((item) => (
-                            <motion.div
-                                layout
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.5 }}
-                                key={item.id}
-                                className="portfolio-item group"
-                            >
-                                <div className="item-image-wrapper">
-                                    {item.type === 'photo' || item.category === 'photo' ? (
-                                        <img src={item.url || item.image} alt={item.title} className="item-image" />
-                                    ) : (
-                                        <div className="item-image" style={{background: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                            <Film size={64} color="var(--color-text-muted)" />
-                                        </div>
-                                    )}
-                                    <div className="item-overlay">
-                                        <div className="overlay-content">
-                                            <div className="cat-icon-wrapper">
-                                                {item.category === 'photo' && <Image size={24} />}
-                                                {item.category === 'video' && <Film size={24} />}
-                                                {item.category === 'script' && <FileText size={24} />}
-                                            </div>
-                                            <h3>{item.title}</h3>
-                                            <p>{item.description || item.desc}</p>
-                                            <button className="view-btn">
-                                                <ExternalLink size={20} />
-                                            </button>
-                                        </div>
-                                    </div>
+                      {filteredItems.map((item) => (
+                        <motion.div
+                          layout
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.5 }}
+                          key={item.id}
+                          className="portfolio-item group"
+                        >
+                          <div className="item-image-wrapper">
+                            {item.type === 'photo' || item.category === 'photo' ? (
+                              <img src={item.url || item.image} alt={item.title} className="item-image" />
+                            ) : (
+                              <div className="item-image" style={{background: '#1a1a1a', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <Film size={64} color="var(--color-text-muted)" />
+                              </div>
+                            )}
+                            <div className="item-overlay">
+                              <div className="overlay-content">
+                                <div className="cat-icon-wrapper">
+                                  {item.category === 'photo' && <Image size={24} />}
+                                  {item.category === 'video' && <Film size={24} />}
+                                  {item.category === 'cinema' && <Film size={24} />}
+                                  {item.category === 'reportage-documentaire' && <FileText size={24} />}
+                                  {item.category === 'script' && <FileText size={24} />}
                                 </div>
-                            </motion.div>
-                        ))}
+                                <h3>{item.title}</h3>
+                                <p>{item.description || item.desc}</p>
+
+                                <div className="center-action" role="button" tabIndex={0} onClick={() => {
+                                  // open modal showing all media for the post if present
+                                  if (item.post_id) {
+                                  const post = posts.find(p => p.id === item.post_id) || { title: 'Série', description: '' };
+                                  const medias = getMediaByPost(item.post_id);
+                                  setModalPost(post);
+                                  setModalMedia(medias.length ? medias : [item]);
+                                  } else {
+                                  setModalPost({ title: item.title, description: item.description || item.desc });
+                                  setModalMedia([item]);
+                                  }
+                                  setModalOpen(true);
+                                }}>
+                                  <div className="pulse-icon">Voir la série</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
                     </AnimatePresence>
                 </motion.div>
+                  {modalOpen && (
+                    <PostModal open={modalOpen} onClose={() => setModalOpen(false)} post={modalPost} media={modalMedia} />
+                  )}
             </div>
 
             <style>{`
@@ -226,6 +250,13 @@ const Portfolio = () => {
           background: var(--color-accent);
           color: #000;
         }
+        .center-action{display:flex;align-items:center;justify-content:center}
+        .center-action .pulse-icon{background:rgba(0,0,0,0.6);border:2px solid rgba(255,255,255,0.06);color:var(--color-text);padding:0.75rem 1rem;border-radius:999px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.6);font-weight:600;display:inline-block;position:relative;z-index:1}
+        .center-action .pulse-icon:hover{transform:translateY(-3px)}
+        .center-action .pulse-icon{animation:pop 1.8s infinite}
+        @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
+        .center-action .pulse-icon::after{content:'';position:absolute;left:50%;top:50%;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.02);transform:translate(-50%,-50%) scale(0.7);animation:rad 1.8s infinite;z-index:0;pointer-events:none}
+        @keyframes rad{0%{transform:translate(-50%,-50%) scale(0.7);opacity:0.6}100%{transform:translate(-50%,-50%) scale(1.6);opacity:0}}
       `}</style>
         </section>
     );

@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { Outlet, Link, useLocation, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Image as ImageIcon, LogOut, Camera } from 'lucide-react';
+import { LayoutDashboard, Image as ImageIcon, LogOut, Camera, FileText as FileTextIcon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const AdminLayout = () => {
@@ -36,6 +36,13 @@ const AdminLayout = () => {
           >
             <ImageIcon size={20} />
             Médias
+          </Link>
+          <Link 
+            to="/admin/posts" 
+            className={`nav-link ${location.pathname.startsWith('/admin/posts') ? 'active' : ''}`}
+          >
+            <FileTextIcon size={20} />
+            Posts
           </Link>
         </nav>
         <div className="admin-footer">
