@@ -82,7 +82,7 @@ const Services = () => {
                 ))}
               </ul>
               <button
-                className={`btn-service ${service.is_popular ? 'btn-primary' : 'btn-outline-dark'}`}
+                className="btn-service"
                 onClick={() => handleReserve(service)}
               >
                 Réserver
@@ -176,9 +176,10 @@ const Services = () => {
         }
 
         .btn-service:hover {
-          background: #e5a91f;
+          background: #d4a837;
+          color: black;
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+          box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
         }
         
         .btn-outline-dark {
