@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Camera, Video, PenTool, Check } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import ReservationModal from './ReservationModal';
 
 const iconMap = {
   camera: <Camera size={40} />,
@@ -14,6 +15,8 @@ const Services = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedService, setSelectedService] = useState(null);
+  const [showReservationModal, setShowReservationModal] = useState(false);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -37,7 +40,8 @@ const Services = () => {
   }, []);
 
   const handleReserve = (service) => {
-    navigate('/checkout', { state: { service: { title: service.title, price: service.price } } });
+    setSelectedService(service);
+    setShowReservationModal(true);
   };
 
   if (loading) {
@@ -159,6 +163,24 @@ const Services = () => {
           color: var(--color-accent);
         }
         
+        .btn-service {
+          padding: 0.75rem 1.75rem;
+          background: var(--color-accent);
+          color: white;
+          border: none;
+          border-radius: 4px;
+          text-transform: uppercase;
+          font-weight: bold;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .btn-service:hover {
+          background: #e5a91f;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+        
         .btn-outline-dark {
              padding: 0.75rem 1.75rem;
              border: 1px solid rgba(255,255,255,0.2);
@@ -173,6 +195,17 @@ const Services = () => {
             color: var(--color-accent);
         }
       `}</style>
+
+      {showReservationModal && selectedService && (
+        <ReservationModal 
+          service={selectedService}
+          onClose={() => setShowReservationModal(false)}
+          onSuccess={() => {
+            // Réinitialiser la modal après succès
+            setSelectedService(null);
+          }}
+        />
+      )}
     </section>
   );
 };

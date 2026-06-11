@@ -137,8 +137,8 @@ const PostForm = ({ editingPost, onClose }) => {
         .drop-sub{font-size:0.85rem;color:var(--color-text-muted)}
         .drop-zone input[type=file]{display:none}
         .files-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.75rem;margin-top:0.75rem}
-        .file-card{background:rgba(0,0,0,0.06);padding:0.5rem;border-radius:8px;display:flex;flex-direction:column;gap:0.5rem;align-items:flex-start}
-        .file-card img{width:100%;height:96px;object-fit:cover;border-radius:6px}
+        .file-card{background:rgba(0,0,0,0.06);padding:0.5rem;border-radius:8px;display:flex;flex-direction:column;gap:0.5rem;align-items:stretch}
+        .file-card img{width:100%;height:96px;object-fit:cover;border-radius:6px;display:block}
         .file-meta{width:100%;display:flex;align-items:center;justify-content:space-between}
         .file-name{font-size:0.9rem;color:var(--color-text);font-weight:600}
         .file-vid{width:100%;height:96px;background:#111;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--color-text-muted)}

@@ -51,7 +51,7 @@ app.post('/api/contact', async (req, res) => {
         from: `"${name}" <${process.env.GMAIL_USER}>`,
         replyTo: email,
         to: process.env.CONTACT_RECEIVER_EMAIL || process.env.GMAIL_USER,
-        subject: `[LUMIÈRE] Nouveau message de ${name}`,
+        subject: `[Wasim photo&video] Nouveau message de ${name}`,
         html: `
       <div style="font-family: 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto;">
         <h2 style="color: #d4af37; border-bottom: 2px solid #d4af37; padding-bottom: 8px;">
@@ -74,6 +74,46 @@ app.post('/api/contact', async (req, res) => {
         res.json({ success: true, message: 'Email envoyé avec succès !' });
     } catch (error) {
         console.error('Erreur envoi email:', error);
+        res.status(500).json({ error: 'Échec de l\'envoi. Réessayez plus tard.' });
+    }
+});
+
+// POST /api/reserve-service
+app.post('/api/reserve-service', async (req, res) => {
+    const { serviceName, clientName, clientEmail, clientRequest } = req.body;
+
+    if (!serviceName || !clientName || !clientEmail || !clientRequest) {
+        return res.status(400).json({ error: 'Tous les champs sont requis.' });
+    }
+
+    const mailOptions = {
+        from: `"${clientName}" <${process.env.GMAIL_USER}>`,
+        replyTo: clientEmail,
+        to: process.env.CONTACT_RECEIVER_EMAIL || process.env.GMAIL_USER,
+        subject: `[Wasim photo&video] Demande de réservation - ${serviceName}`,
+        html: `
+      <div style="font-family: 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto;">
+        <h2 style="color: #d4af37; border-bottom: 2px solid #d4af37; padding-bottom: 8px;">
+          Nouvelle demande de réservation
+        </h2>
+        <p><strong>Service :</strong> ${serviceName}</p>
+        <p><strong>Nom du client :</strong> ${clientName}</p>
+        <p><strong>Email du client :</strong> <a href="mailto:${clientEmail}">${clientEmail}</a></p>
+        <hr style="border: none; border-top: 1px solid #eee; margin: 16px 0;" />
+        <p><strong>Détails de la requête :</strong></p>
+        <p style="white-space: pre-wrap; background: #f9f9f9; padding: 16px; border-radius: 4px;">${clientRequest}</p>
+        <p style="font-size: 12px; color: #999; margin-top: 24px;">
+          Envoyé depuis la page de réservation — Wasim photo&video
+        </p>
+      </div>
+    `,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        res.json({ success: true, message: 'Demande de réservation envoyée avec succès !' });
+    } catch (error) {
+        console.error('Erreur envoi email réservation:', error);
         res.status(500).json({ error: 'Échec de l\'envoi. Réessayez plus tard.' });
     }
 });

@@ -102,7 +102,7 @@ const MediaUploadModal = ({ onClose, editingMedia }) => {
         .drop-zone input[type=file]{display:none}
         .drop-label:focus{outline:2px solid rgba(212,175,55,0.18);outline-offset:4px}
         .file-preview{display:flex;align-items:center;gap:0.75rem;background:rgba(0,0,0,0.04);padding:0.5rem;border-radius:8px;margin-top:0.5rem}
-        .file-preview img{width:96px;height:72px;object-fit:cover;border-radius:6px;animation:thumb-in 240ms ease}
+        .file-preview img{width:96px;height:72px;object-fit:cover;border-radius:6px;animation:thumb-in 240ms ease;display:block;flex-shrink:0}
         .file-icon{width:96px;height:72px;background:#111;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--color-text-muted)}
         .file-meta{display:flex;flex-direction:column}
         .file-name{font-size:0.95rem;color:var(--color-text);font-weight:700}
