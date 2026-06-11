@@ -37,9 +37,26 @@ const Portfolio = () => {
   const [modalPost, setModalPost] = useState(null);
   const [modalMedia, setModalMedia] = useState([]);
     
-    let portfolioItems = getMediaBySection('portfolio');
-    
-    // Fallback if no media in database
+    // Build portfolio items from posts that have associated media.
+    // Only include posts with at least one media attached. Use the first media as thumbnail.
+    let portfolioItems = posts
+      .map((post) => {
+        const medias = getMediaByPost(post.id) || [];
+        if (medias.length === 0) return null;
+        const primary = medias[0];
+        return {
+          id: post.id,
+          title: post.title,
+          description: post.description,
+          category: post.category || primary.category || 'photo',
+          url: primary.url,
+          type: primary.type || 'photo',
+          post_id: post.id,
+        };
+      })
+      .filter(Boolean);
+
+    // Fallback if no posts with media in database
     if (portfolioItems.length === 0) {
         portfolioItems = defaultItems.map(item => ({...item, url: item.image, type: item.category === 'photo' ? 'photo' : 'video'}));
     }

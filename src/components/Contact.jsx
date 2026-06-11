@@ -48,10 +48,10 @@ const Contact = () => {
                         <h3>Parlons de votre projet</h3>
                         <p>N'hésitez pas à me contacter pour discuter de vos idées. Je suis disponible pour des projets photographiques, vidéos et d'écriture.</p>
                         <div className="info-item">
-                            <strong>Email:</strong> contact@lumiere.studio
+                            <strong>Email:</strong> wasim.photo.video@gmail.com
                         </div>
                         <div className="info-item">
-                            <strong>Studio:</strong> Paris, France
+                            <strong>Studio:</strong> Vilvoorde, Belgique
                         </div>
                     </div>
 
