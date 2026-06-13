@@ -9,9 +9,9 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-
-if (!supabaseUrl) {
+if (!supabaseUrl || !supabaseServiceRoleKey) {
   console.error('❌ SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY doivent être définis dans .env');
   process.exit(1);
 }
