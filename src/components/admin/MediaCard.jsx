@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Pencil, Trash2, Image as ImageIcon, Film, Calendar } from 'lucide-react';
 
 const MediaCard = ({ media, onEdit, onDelete }) => {

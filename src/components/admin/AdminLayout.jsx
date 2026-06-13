@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Outlet, Link, useLocation, Navigate } from 'react-router-dom';
 import { LayoutDashboard, Image as ImageIcon, LogOut, Camera, FileText as FileTextIcon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';

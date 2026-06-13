@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Image as ImageIcon, Film, BarChart3, Plus } from 'lucide-react';
 import { useMedia } from '../../context/MediaContext';

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Upload, Link as LinkIcon, Eye } from 'lucide-react';
 import { useMedia } from '../../context/MediaContext';
 import ModalWrapper from '../../components/ModalWrapper';

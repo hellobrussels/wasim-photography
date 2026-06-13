@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Plus, Filter } from 'lucide-react';
 import { useMedia } from '../../context/MediaContext';
 import MediaUploadModal from '../../components/admin/MediaUploadModal';

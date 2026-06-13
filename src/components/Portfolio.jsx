@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Image, Film, FileText } from 'lucide-react';
 import PostModal from './PostModal';
